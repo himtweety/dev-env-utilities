@@ -1,32 +1,32 @@
-version: "3.7"
 services:
   db:
-    image: mysql
+    image: mysql:8.0
     container_name: synergiq-app-db
     restart: always
     ports:
-      - 3306:3306
+      - "3306:3306"
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
       - ./docker-compose/mysql-data:/var/lib/mysql
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
     container_name: elasticsearch
     restart: always
     environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      xpack.security.enabled: "false"
+      discovery.type: single-node
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ES_JAVA_OPTS: "-Xms2g -Xmx2g"
     ulimits:
       memlock:
         soft: -1
@@ -39,18 +39,19 @@ services:
     volumes:
       - ./docker-compose/elasticsearch-data:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
+
   elasticsearch6:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
     container_name: elasticsearch6
     restart: always
     environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-      - ELASTIC_USERNAME=${ELASTIC_USERNAME}
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      xpack.security.enabled: "false"
+      discovery.type: single-node
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ES_JAVA_OPTS: "-Xms4g -Xmx4g"
     ulimits:
       memlock:
         soft: -1
@@ -63,11 +64,12 @@ services:
     volumes:
       - ./docker-compose/elasticsearch6-data:/usr/share/elasticsearch/data
     ports:
-      - 9201:9200
-      - 9301:9300
+      - "9201:9200"
+      - "9301:9300"
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: pma    
+    container_name: pma
     depends_on:
       - db
     links:
@@ -78,12 +80,14 @@ services:
       PMA_ARBITRARY: 1
     restart: always
     ports:
-      - 8083:80  
+      - "8083:80"
+
   redis:
     image: redis:6.2-alpine
+    container_name: redis
     restart: always
     ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning 
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./docker-compose/redis-data:/data
