@@ -42,30 +42,21 @@ services:
       - "9200:9200"
       - "9300:9300"
 
-  elasticsearch6:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.23
-    container_name: elasticsearch6
-    restart: always
-    environment:
-      xpack.security.enabled: "false"
-      discovery.type: single-node
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-      ES_JAVA_OPTS: "-Xms4g -Xmx4g"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - ./docker-compose/elasticsearch6-data:/usr/share/elasticsearch/data
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
     ports:
-      - "9201:9200"
-      - "9301:9300"
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./docker-compose/mongo-conf/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
