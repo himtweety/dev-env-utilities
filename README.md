@@ -68,6 +68,30 @@ The default configuration in the `docker-compose.yml` file sets up the services 
   - Image: `redis:latest`
   - Port: `6379`
 
+- **Minio**
+  - Image: `minio:latest`
+  - Port: `9000-9001`
+  - Environment Variable:
+      - `MINIO_ROOT_USER:-minioadmin`
+      - `MINIO_ROOT_PASSWORD:-minioadmin`
+
+- **Mongo**
+  - Image: `mongo:latest`
+  - Port: `27017`
+  - Environment Variable:
+        - `MONGO_INITDB_ROOT_USERNAME:-mongo`
+        - `MONGO_INITDB_ROOT_PASSWORD:-mongo`
+        - `MONGO_INITDB_DATABASE:-mongodb`
+  - You have to add application users and password with required privilege in (docker-compose/mongo-conf/init-mongo.js)
+
+- **RabbitMQ**
+  - Image: `rabbitmq:3-management-alpine`
+  - Port: `5672, 15672`
+  - Environment Variable:
+    - `RABBITMQ_ERLANG_COOKIE:-secret_cookie`
+    - `RABBITMQ_DEFAULT_USER:-rabbitmq`
+    - `RABBITMQ_DEFAULT_PASS:-123456`
+
 - **Elasticsearch**
   - Image: `elasticsearch:7.10.1`
   - Port: `9200`
@@ -97,6 +121,8 @@ This command will pull the necessary images (if not already available) and start
 ### Accessing the Services
 - **MySQL**: Connect to `localhost:3306` using a MySQL client.
 - **Redis**: Connect to `localhost:6379` using a Redis client.
+- **Mongo**: Connect to `localhost:6379` using a Redis client.
+- **RabbitMQ**: connect to service `localhost:5672` and access `localhost:15672` using a web browser.
 - **Elasticsearch**: Access the Elasticsearch REST API at `http://localhost:9200`.
 - **phpMyAdmin**: Access the web interface at `http://localhost:8080`.
 

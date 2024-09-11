@@ -7,10 +7,10 @@ services:
       - "3306:3306"
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-mylocaldb}
+      MYSQL_USER: ${DB_USERNAME:-localuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-localpassword}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
@@ -24,8 +24,8 @@ services:
     environment:
       xpack.security.enabled: "false"
       discovery.type: single-node
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME:-elastic}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-elastic}
       ES_JAVA_OPTS: "-Xms2g -Xmx2g"
     ulimits:
       memlock:
@@ -65,9 +65,9 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-mongo}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-mongo}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-mongodb}
 
   mongo-client:
     image: mongo:latest
@@ -76,9 +76,9 @@ services:
       - mongodb
     entrypoint: [ "sleep", "infinity" ] # Keeps the container running to allow access
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-mongo}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-mongo}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-mongodb}
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -119,4 +119,3 @@ services:
     volumes:
       - ./docker-compose/rabbitmq/data/:/var/lib/rabbitmq/
       - ./docker-compose/rabbitmq/log/:/var/log/rabbitmq
-

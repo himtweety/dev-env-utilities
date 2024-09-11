@@ -12,7 +12,7 @@ db.createRole({
   role: "applicationUserRole",
   privileges: [
     {
-      resource: { db: "todoapp", collection: "" },
+      resource: { db: "mongodb", collection: "" },
       actions: ["find", "insert", "update", "remove"]
     }
   ],
@@ -20,20 +20,20 @@ db.createRole({
 });
 
 db.createUser({
-  user: "todoappuser",
-  pwd: "todoapppass",
+  user: "mylocaluser",
+  pwd: "mylocalpass",
   roles: [
-    { role: "applicationUserRole", db: "todoapp" }
+    { role: "applicationUserRole", db: "mongodb" }
   ]
 });
 
 db.createUser({
-  user: "myuser",
-  pwd: "mypassword",
+  user: "mylocaluserrw",
+  pwd: "mylocalpass",
   roles: [
     {
       role: "readWrite",
-      db: "mydatabase"
+      db: "mongodb"
     }
   ]
 });
