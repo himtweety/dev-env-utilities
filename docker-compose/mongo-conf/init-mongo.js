@@ -8,14 +8,32 @@
 //       }
 //     ]
 //   });
-  db.createUser({
-    user: "myuser",
-    pwd: "mypassword",
-    roles: [
-      {
-        role: "readWrite",
-        db: "mydatabase"
-      }
-    ]
-  });
-  
+db.createRole({
+  role: "applicationUserRole",
+  privileges: [
+    {
+      resource: { db: "todoapp", collection: "" },
+      actions: ["find", "insert", "update", "remove"]
+    }
+  ],
+  roles: []
+});
+
+db.createUser({
+  user: "todoappuser",
+  pwd: "todoapppass",
+  roles: [
+    { role: "applicationUserRole", db: "todoapp" }
+  ]
+});
+
+db.createUser({
+  user: "myuser",
+  pwd: "mypassword",
+  roles: [
+    {
+      role: "readWrite",
+      db: "mydatabase"
+    }
+  ]
+});

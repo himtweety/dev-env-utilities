@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql:8.0
-    container_name: synergiq-app-db
+    container_name: my-app-db
     restart: always
     ports:
       - "3306:3306"
@@ -41,6 +41,18 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - ./docker-compose/minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
 
   mongodb:
     image: mongo:latest
@@ -48,7 +60,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - ./docker-compose/mongo-data:/data/db
       - ./docker-compose/mongo-conf/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     env_file:
       - .env
@@ -57,6 +69,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
 
+  mongo-client:
+    image: mongo:latest
+    container_name: mongo-client
+    depends_on:
+      - mongodb
+    entrypoint: [ "sleep", "infinity" ] # Keeps the container running to allow access
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -82,3 +104,19 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - ./docker-compose/redis-data:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:-secret_cookie}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-123456}
+      # RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_PASS:-/}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./docker-compose/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./docker-compose/rabbitmq/log/:/var/log/rabbitmq
+

@@ -27,17 +27,13 @@ docker-compose
 ├── apache-conf
 │ └── apache2.conf
 ├── cache
+├── minio_data
 ├── elasticsearch-data
 ├── mysql-data
 ├── mysql
 │ └── init_db.sql
 ├── nginx
 ├── redis-data
-├── system-config
-│ ├── .synergiqplatform.ini
-│ ├── ability-online-master.ini
-│ ├── local.php
-│ └── mastersite.ini
 ├── xdebug
 ├── .env
 ├── docker-compose.yaml
@@ -49,8 +45,11 @@ The `docker-compose.yml` file defines the following services:
 
 1. **MySQL**: A popular relational database management system.
 2. **Redis**: An in-memory data structure store, used as a database, cache, and message broker.
-3. **Elasticsearch**: A distributed, RESTful search and analytics engine.
-4. **phpMyAdmin**: A web interface for MySQL administration.
+3. **Mongo**: The world's most popular document database is now the world's most versatile developer data platform.
+4. **Elasticsearch**: A distributed, RESTful search and analytics engine.
+5. **Minio**: MinIO's High Performance Object Storage is Open Source, Amazon S3 compatible, Kubernetes Native and is designed for cloud native workloads like AI
+6. **RabbitMQ**: RabbitMQ is a reliable and mature messaging and streaming broker.
+6. **phpMyAdmin**: A web interface for MySQL administration.
    
 ### Configuration
 
